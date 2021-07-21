@@ -1,7 +1,7 @@
 import {authHeader, handleResponse} from '../../helpers';
 
 const config = {
-    apiUrl: 'http://localhost:8080'
+    apiUrl: 'https://furgochile-backend.herokuapp.com'
 }
 
 export const marcasService = {
