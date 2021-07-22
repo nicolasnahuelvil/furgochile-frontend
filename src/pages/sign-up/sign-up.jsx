@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -59,9 +57,6 @@ export default function SignUp() {
 
     const splitRutDV = (rut) => rut.split("-");
 
-    const obtenerEdad = () => {
-
-    }
 
     const formik = useFormik({
         initialValues: {
@@ -268,8 +263,7 @@ export default function SignUp() {
                                             fullWidth={true}
                                             style={{width: 395}}
                                             value={idTipoLicencia}
-                                            onChange={event => setIdTipoLicencia(event.target.value)}
-                                        >
+                                            onChange={event => setIdTipoLicencia(event.target.value)}>
                                             <MenuItem value={1}>A1</MenuItem>
                                             <MenuItem value={2}>A2</MenuItem>
                                             <MenuItem value={3}>A3</MenuItem>

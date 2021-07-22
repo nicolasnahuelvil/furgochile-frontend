@@ -6,11 +6,8 @@ import '@fontsource/roboto';
 import App from './App';
 
 
-//Configurar backend mock
-import {configureFakeBackend} from "./helpers";
 
-//
-// configureFakeBackend();
+
 
 const AppHelmet = () => (
     <HelmetProvider>

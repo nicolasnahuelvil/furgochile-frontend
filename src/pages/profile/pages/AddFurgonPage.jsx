@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import {marcasService} from "../../../services/marcas/MarcasService";
 import RegionSelect from "../../../components/region-comuna-selects/region-select.component";
 import ComunaSelect from "../../../components/region-comuna-selects/comuna-select.component";
+import { furgonesService } from "../../../services/furgones/FurgonesService";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -31,6 +33,14 @@ const AddFurgonPage = () => {
     const [idMarca, setIdMarca] = useState(undefined);
     const [comunaSelected, setComunaSelected] = useState(undefined);
     const [regionSelected, setRegionSelected] = useState(undefined);
+    const [capacidad, setCapacidad] = useState(undefined);
+    const [anho, setAnho] = useState(undefined);
+    const [patente, setPatente] = useState(undefined);
+    const [acompanante, setAcompanante] = useState(undefined);
+
+    const [msg, setMsg] = useState(undefined);
+
+    const [msgType, setMsgType] = useState(undefined);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -63,6 +73,21 @@ const AddFurgonPage = () => {
         ))
     }
 
+    const handleAdd = () => {
+        console.log(JSON.stringify({acompanante, anho, idEstado, idRegion: regionSelected.id, idComuna: comunaSelected.id, capacidad, idMarca, idModelo, patente}))
+        furgonesService.add(acompanante, anho, idEstado, regionSelected.id, comunaSelected.id, capacidad, idMarca, idModelo, patente)
+        .then(response => {
+            console.log(response)
+            setMsgType("success")
+            setMsg(response.details[0])
+        })
+        .catch(error => {
+            console.log(error)
+            setMsg(error);
+            setMsgType("error");
+        });
+    }
+
     return (
         <>
             <Grid container>
@@ -73,16 +98,26 @@ const AddFurgonPage = () => {
                         mismo.
                     </Typography>
                 </Grid>
+                
+                <Grid item xs={12}>
+                {msg &&
+                        <Alert severity={msgType} style={{marginTop: 20, marginBottom: 20}}>{msg}</Alert>
+                    }
+                </Grid>
 
                 <Grid item xs={12}>
                     <Grid container>
                         <Grid item xs={5}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Acompañante" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Acompañante" variant="outlined"
+                                                                value={acompanante}
+                                                                onChange={(event) => setAcompanante(event.target.value)}/>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Año" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Año" variant="outlined"                             
+                                    value={anho}
+                            onChange={(event) => setAnho(event.target.value)}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -106,7 +141,9 @@ const AddFurgonPage = () => {
                             </Grid>
                             
                             <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Capacidad" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Capacidad" variant="outlined"
+                                     value={capacidad}
+                                     onChange={(event) => setCapacidad(event.target.value)}/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -149,7 +186,9 @@ const AddFurgonPage = () => {
                                 </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Patente" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Patente" variant="outlined" 
+                                    value={patente}
+                                    onChange={(event) => setPatente(event.target.value)}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
@@ -161,7 +200,7 @@ const AddFurgonPage = () => {
                         <Grid item xs={2}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <Button onClick={toggleModal}>
+                                    <Button onClick={handleAdd} disabled={msgType === "success"}>
                                         Agregar
                                     </Button>
                                 </Grid>
@@ -173,8 +212,7 @@ const AddFurgonPage = () => {
 
                 <Grid item xs={12}>
                     <Typography style={{fontSize: 13, paddingTop: 20}}>
-                        Este formulario es para Consulta inhabilidades para trabajar con menores de edad ademas de
-                        comprobar si se encuentra su licencia vigente A1 o A3.
+                        Este formulario es para registrar sus furgones
                     </Typography>
                 </Grid>
             </Grid>

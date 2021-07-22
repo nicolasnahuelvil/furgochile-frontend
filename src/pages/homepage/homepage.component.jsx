@@ -28,7 +28,6 @@ const HomePage = () => {
             <Helmet>
                 <title>FurgoChile | Inicio</title>
             </Helmet>
-
             <Grid container>
                 <Grid item xs={12}>
                     <Grid container>
@@ -92,13 +91,6 @@ const HomePage = () => {
                     <Grid container>
                         <Grid item xs/>
                         <Grid item>
-                            <div style={{display: "flex", alignSelf: "flex-end"}}>
-                                <Button
-                                    endIcon={<ContactSupportIcon>Soporte al cliente</ContactSupportIcon>}
-                                >
-                                    Soporte al cliente
-                                </Button>
-                            </div>
                         </Grid>
                         <Grid item xs/>
                     </Grid>
