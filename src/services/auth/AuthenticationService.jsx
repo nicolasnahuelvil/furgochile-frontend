@@ -5,7 +5,7 @@ import {authHeader, handleResponse} from '../../helpers';
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
 const config = {
-    apiUrl: 'http://localhost:8080'
+    apiUrl: 'https://furgochile-backend.herokuapp.com/'
 }
 
 export const authenticationService = {
