@@ -30,11 +30,11 @@ const FurgonesList = ({furgones}) => {
     }
     console.log(furgones)
 
-    const furgonCardRender = ({id, chofer, acompanante, horario, precioDesde, servicios, score, location}, index) => (
+    const furgonCardRender = ({id, chofer, acompanante, horario, precioDesde, servicios, score, location, image}, index) => (
         <Grid container style={{backgroundColor: '#ffffff', marginTop: 15}} key={index}>
             <Grid item xs={2}>
                 <img width='180px' height='120px'
-                     src="https://www.nissan-cdn.net/content/dam/Nissan/cl/vehicles/nv350escolar/FINAL%20NV350.jpg.ximg.l_12_m.smart.jpg"
+                    src={image !== null ? image : "https://www.nissan-cdn.net/content/dam/Nissan/cl/vehicles/nv350escolar/FINAL%20NV350.jpg.ximg.l_12_m.smart.jpg"}
                      alt="furgon"/>
             </Grid>
             <Grid item xs={3} style={{alignSelf: 'center'}}>

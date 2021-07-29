@@ -1,7 +1,7 @@
 import {authHeader, handleResponse} from '../../helpers';
 
 const config = {
-    apiUrl: 'https://furgochile-backend.herokuapp.com'
+    apiUrl: 'http://localhost:8080'
 }
 
 export const myPerfilServices = {

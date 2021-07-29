@@ -11,6 +11,7 @@ import ComunaSelect from "../../../components/region-comuna-selects/comuna-selec
 import { furgonesService } from "../../../services/furgones/FurgonesService";
 import Alert from "@material-ui/lab/Alert";
 import { lightGreen } from "@material-ui/core/colors";
+import { servicesService } from "../../../services/services/ServicesService";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -26,54 +27,39 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddFurgonPage = () => {
+const AddServiceFurgonPage = () => {
     const classes = useStyles();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [acompanante, setAcompanante] = useState(undefined);
-    const [anho, setAnho] = useState(undefined);
-    const [idMarca, setIdMarca] = useState(undefined);
-    const [idModelo, setIdModelo] = useState(undefined);
-    const [capacidad, setCapacidad] = useState(undefined);
-    const [patente, setPatente] = useState(undefined);
-    const [regionSelected, setRegionSelected] = useState(undefined);
-    const [comunaSelected, setComunaSelected] = useState(undefined);
-    const [idEstado, setIdEstado] = useState(undefined);
-    const [selectFile, setSelectFile] = useState(undefined);
+    const [idFurgon, setIdFurgon] = useState(undefined);
+    const [idHorario, setIdHorario] = useState(undefined);
+    const [idTipoServicio, setIdTipoServicio] = useState(undefined);
+    const [idSexo, setIdSexo] = useState(undefined);
+    const [capacidad, setCapacidad] = useState(undefined);;
+    const [valorServicio, setValorServicio] = useState(undefined);
     const [msg, setMsg] = useState(undefined);
     const [msgType, setMsgType] = useState(undefined);
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     }
-    const [marcas, setMarcas] = useState([]);
+
+    const [furgones, setFurgones] = useState([]);
 
     useEffect(() => {
 
-        marcasService.getAll()
+        furgonesService.getMisFurgones()
             .then(response => {
                 console.log(response)
-                setMarcas(response)
+                setFurgones(response)
             })
 
     }, [])
 
-    const handleSetIdMarca = (id) => {
-        setIdMarca(id);
-        setIdModelo(undefined);
-    }
 
-    const getModelosSelect = () => {
-        if (idMarca === undefined) {
-            return <MenuItem value={-1}>Debes seleccionar una marca.</MenuItem>
-        }
 
-        return marcas.find(marca => marca.id === idMarca).modelos.map((modelo, index) => (
-            <MenuItem value={modelo.id}>{modelo.nombre}</MenuItem>
-        ))
-    }
 
     const handleAdd = () => {
-        console.log(JSON.stringify({acompanante, anho, idMarca, idModelo, capacidad, patente, idRegion: regionSelected.id, idComuna: comunaSelected.id, idEstado, selectFile}))
-        furgonesService.add(acompanante, anho, idMarca, idModelo, capacidad, patente, regionSelected.id, comunaSelected.id, idEstado, selectFile)
+        console.log(JSON.stringify({idFurgon, idHorario, idTipoServicio, idSexo, capacidad, valorServicio  }))
+        servicesService.add(idFurgon, idHorario, idTipoServicio, idSexo, capacidad, valorServicio )
             .then(response => {
                 console.log(response)
                 setMsgType("success")
@@ -86,28 +72,13 @@ const AddFurgonPage = () => {
             });
     }
 
-    
 
-    const handleUploadImageClick = async event => {
-
-        const reader = new FileReader();
-
-        reader.onload = (event) => {
-            setSelectFile((event.target.result))
-        };
-
-        reader.onerror = (err) => {
-            console.error(err);
-        };
-
-        reader.readAsDataURL(event.target.files[0]);
-    };
 
     return (
         <>
             <Grid container>
                 <Grid item xs={12} style={{ padding: 25 }}>
-                    <Typography variant='h4' align='center'>Agregar nuevo furgon</Typography>
+                    <Typography variant='h4' align='center'>Agregar nuevo servicio</Typography>
                     <Typography align='center' style={{ paddingTop: 10 }}>
                         Verificar es nuestro apartado para registrarte como dueño de un furgon y hacer promoción del
                         mismo.
@@ -124,49 +95,70 @@ const AddFurgonPage = () => {
                     <Grid container>
                         <Grid item xs={5}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Acompañante" variant="outlined"
-                                        value={acompanante}
-                                        onChange={(event) => setAcompanante(event.target.value)} />
+                            <Grid item xs={12}>
+                                    <FormControl variant="outlined">
+                                        <InputLabel>Furgon</InputLabel>
+                                        <Select
+                                            label="Furgon"
+                                            id="idFurgon"
+                                            fullWidth
+                                            style={{ width: 210 }}
+                                            value={idFurgon}
+                                            onChange={event => setIdFurgon(event.target.value)}
+                                        >
+                                            {furgones.map((furgon) => (
+                                                <MenuItem value={furgon.id}>{furgon.modelo} - {furgon.patente}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Año" variant="outlined"
-                                        value={anho}
-                                        onChange={(event) => setAnho(event.target.value)} />
-                                </Grid>
-                                
+
 
                                 <Grid item xs={12}>
                                     <FormControl variant="outlined">
-                                        <InputLabel>Marca</InputLabel>
+                                        <InputLabel>Horario</InputLabel>
                                         <Select
-                                            label="Marca"
-                                            id="idMarca"
+                                            label="Horario"
+                                            id="idHorario"
                                             fullWidth
                                             style={{ width: 210 }}
-                                            value={idMarca}
-                                            onChange={event => handleSetIdMarca(event.target.value)}
-                                        >
-                                            {marcas.map((marca) => (
-                                                <MenuItem value={marca.id}>{marca.nombre}</MenuItem>
-                                            ))}
+                                            value={idHorario}
+                                            onChange={event => setIdHorario(event.target.value)}>
+                                            <MenuItem value={1}>Mañana</MenuItem>
+                                            <MenuItem value={2}>Tarde</MenuItem>
+                                            <MenuItem value={3}>Mañana y Tarde</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <FormControl variant="outlined">
-                                        <InputLabel>Modelo</InputLabel>
+                                        <InputLabel>Sexo conductor</InputLabel>
                                         <Select
-                                            label="Modelo"
-                                            id="idModelo"
+                                            label="Sexo"
+                                            id="idSexo"
                                             fullWidth
                                             style={{ width: 210 }}
-                                            value={idModelo}
-                                            onChange={event => setIdModelo(event.target.value)}>
-                                            {
-                                                getModelosSelect()
-                                            }
-
+                                            value={idSexo}
+                                            onChange={event => setIdSexo(event.target.value)}>
+                                            <MenuItem value={1}>Hombre</MenuItem>
+                                            <MenuItem value={2}>Mujer</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl variant="outlined">
+                                        <InputLabel>Tipo de servicio</InputLabel>
+                                        <Select
+                                            label="Tipo de servicio"
+                                            id="idServicio"
+                                            fullWidth
+                                            style={{ width: 210 }}
+                                            value={idTipoServicio}
+                                            onChange={event => setIdTipoServicio(event.target.value)}>
+                                            <MenuItem value={1}>Bus urbano</MenuItem>
+                                            <MenuItem value={2}>Bus rural</MenuItem>
+                                            <MenuItem value={3}>Mini bus urbano</MenuItem>
+                                            <MenuItem value={4}>Mini bus rural</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -181,32 +173,10 @@ const AddFurgonPage = () => {
 
                         <Grid item xs={5}>
                             <Grid container spacing={2}>
-                                
                                 <Grid item xs={12}>
-                                    <TextField id="patente" label="Patente" variant="outlined"
-                                        value={patente}
-                                        onChange={(event) => setPatente(event.target.value)} />
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <RegionSelect style={{ width: 210 }} regionSelected={regionSelected} setRegionSelected={setRegionSelected} />
-                                    <ComunaSelect style={{ width: 210 }} regionSelected={regionSelected} comunaSelected={comunaSelected} setComunaSelected={setComunaSelected} />
-                                </Grid>
-                                <Grid item xs={12}>
-                                <FormControl variant="outlined">
-                                    <InputLabel>Estado</InputLabel>
-                                    <Select
-                                        label="Estado"
-                                        id="idEstado"
-                                        fullWidth
-                                        style={{width: 210}}
-                                        value={idEstado}
-                                        onChange={event => setIdEstado(event.target.value)}
-                                    >
-                                        <MenuItem value={1}>Disponible</MenuItem>
-                                        <MenuItem value={2}>No disponible</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                    <TextField id="valorServicio" label="Valor del servicio" variant="outlined"
+                                        value={valorServicio}
+                                        onChange={(event) => setValorServicio(event.target.value)} />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -224,24 +194,9 @@ const AddFurgonPage = () => {
                     </Grid>
                 </Grid>
 
-                                              
-                <Grid item xs={12} spacing={2}>
-                    <Typography
-                    style={{paddingTop: 20}}
-                    >Foto del furgon</Typography>
-                    <input
-                        accept="image/*"
-                        className={classes.input}
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={handleUploadImageClick}
-                    />
-                </Grid>
-
                 <Grid item xs={12}>
                     <Typography style={{ fontSize: 13, paddingTop: 20 }}>
-                        Este formulario es para registrar furgones
+                        Este formulario es para registrar sus furgones
                     </Typography>
                 </Grid>
             </Grid>
@@ -270,4 +225,4 @@ const AddFurgonPage = () => {
     )
 }
 
-export default AddFurgonPage;
+export default AddServiceFurgonPage;

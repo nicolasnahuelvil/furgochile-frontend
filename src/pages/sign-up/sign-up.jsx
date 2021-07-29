@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -6,22 +6,23 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from "../../components/generic/Button";
-import {Helmet} from "react-helmet-async";
-import {FormControl} from "@material-ui/core";
+import { Helmet } from "react-helmet-async";
+import { FormControl } from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
+import PublishIcon from '@material-ui/icons/Publish';
 import MenuItem from "@material-ui/core/MenuItem";
 import RegionSelect from "../../components/region-comuna-selects/region-select.component";
 import ComunaSelect from "../../components/region-comuna-selects/comuna-select.component";
 import CircularCheckbox from "../../components/generic/CircularCheckbox";
 import Alert from "@material-ui/lab/Alert";
-import {Link} from "react-router-dom";
-import {useFormik} from "formik";
+import { Link } from "react-router-dom";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import {authenticationService} from "../../services";
+import { authenticationService } from "../../services";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,10 +54,44 @@ export default function SignUp() {
     const [idTipoLicencia, setIdTipoLicencia] = useState(undefined);
     const [message, setErrorMessage] = useState(undefined);
     const [messageType, setMessageType] = useState(undefined);
-
-
     const splitRutDV = (rut) => rut.split("-");
+    const [selectFilePerfil, setSelectFilePerfil] = useState(undefined);
+    const [selectFileCarnetFrontal, setSelectFileCarnetFrontal] = useState(undefined);
+    const [selectFileCarnetTrasero, setSelectFileCarnetTrasero] = useState(undefined);
+    const [selectFileLicenciaFrontal, setSelectFileLicenciaFrontal] = useState(undefined);
+    const [selectFileLicenciaTrasero, setSelectFileLicenciaTrasero] = useState(undefined);
 
+
+    const handleUploadImageClick = async (event, imagen) => {
+
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            switch (imagen) {
+                case "perfil":
+                    setSelectFilePerfil((event.target.result))
+                    break;
+                case "carnet_frontal":
+                    setSelectFileCarnetFrontal((event.target.result))
+                    break;
+                case "carnet_trasero":
+                    setSelectFileCarnetTrasero((event.target.result))
+                    break;
+                case "licencia_frontal":
+                    setSelectFileLicenciaFrontal((event.target.result))
+                    break;
+                case "licencia_trasero":
+                    setSelectFileLicenciaTrasero((event.target.result))
+                    break;
+            }
+        };
+
+        reader.onerror = (err) => {
+            console.error(err);
+        };
+
+        reader.readAsDataURL(event.target.files[0]);
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -68,6 +103,7 @@ export default function SignUp() {
             password: "",
             phone: "",
             isConductor: false,
+            numeroLicencia: ""
         },
         validationSchema:
             Yup.object().shape({
@@ -77,9 +113,9 @@ export default function SignUp() {
                 email: Yup.string().email("Debes ingresar un email valido").required('Debes ingresar tu email.'),
                 password: Yup.string().required('Debes ingresar la contraseña.'),
                 edad: Yup.number().typeError('Solo números').required('Debes ingresar tu edad.').positive().integer(),
-                phone: Yup.number().typeError('Tu telefono debe ser solo numeros').required('Debes ingresar tu celular.').positive().integer()
+                phone: Yup.number().typeError('Tu telefono debe ser solo numeros').required('Debes ingresar tu celular.').positive().integer(),
             }),
-        onSubmit({nombres, apellidos, rut, edad, email, password, phone, isConductor}, {setErrors, setSubmitting}) {
+        onSubmit({ nombres, apellidos, rut, edad, email, password, phone, isConductor, numeroLicencia }, { setErrors, setSubmitting }) {
             console.log("ON SUBMITING")
 
             const rutSplited = splitRutDV(rut);
@@ -92,7 +128,8 @@ export default function SignUp() {
 
             const idRol = isConductor ? 2 : 3;
 
-            authenticationService.register(nombres, apellidos, rutSplited[0], rutSplited[1], edad, phone, idSexo, comunaSelected.id, email, password, idRol, idTipoLicencia)
+            authenticationService.register(nombres, apellidos, rutSplited[0], rutSplited[1], edad, phone, idSexo, comunaSelected.id, email, password, idRol, idTipoLicencia,
+                selectFileCarnetFrontal, selectFileCarnetTrasero, selectFileLicenciaFrontal, selectFileLicenciaTrasero, numeroLicencia, selectFilePerfil)
                 .then(response => {
                     console.log(response)
                     setSubmitting(false);
@@ -116,15 +153,15 @@ export default function SignUp() {
             </Helmet>
 
             <Container component="main" maxWidth="xs">
-                <CssBaseline/>
+                <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon/>
+                        <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Crear cuenta
                     </Typography>
-                    {   message &&
+                    {message &&
                         <Alert severity={messageType}>{message}</Alert>
                     }
                     <form className={classes.form} onSubmit={formik.handleSubmit} noValidate autoComplete={false}>
@@ -229,7 +266,7 @@ export default function SignUp() {
                                         label="Sexo"
                                         id="idSexo"
                                         fullWidth
-                                        style={{width: 190}}
+                                        style={{ width: 190 }}
                                         value={idSexo}
                                         onChange={event => setIdSexo(event.target.value)}
                                     >
@@ -242,7 +279,20 @@ export default function SignUp() {
                                 <RegionSelect regionSelected={regionSelected} setRegionSelected={setRegionSelected} />
                             </Grid>
                             <Grid item xs={6}>
-                                <ComunaSelect regionSelected={regionSelected} comunaSelected={comunaSelected} setComunaSelected={setComunaSelected}/>
+                                <ComunaSelect regionSelected={regionSelected} comunaSelected={comunaSelected} setComunaSelected={setComunaSelected} />
+                            </Grid>
+                            <Grid item xs={12} spacing={2}>
+                                <Typography
+                                    style={{ paddingTop: 10 }}
+                                >Foto de perfil</Typography>
+                                <input
+                                    accept="image/*"
+                                    className={classes.input}
+                                    id="contained-button-file"
+                                    multiple
+                                    type="file"
+                                    onChange={(event) => handleUploadImageClick(event, "perfil")}
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <CircularCheckbox
@@ -253,7 +303,8 @@ export default function SignUp() {
                                     label={'Soy conductor de un furgon'}
                                 />
                             </Grid>
-                            { formik.values.isConductor &&
+
+                            {formik.values.isConductor &&
                                 <Grid item xs={12}>
                                     <FormControl variant="outlined">
                                         <InputLabel>Tipo de licencia</InputLabel>
@@ -261,7 +312,7 @@ export default function SignUp() {
                                             id="idTipoLicencia"
                                             label="Tipo de licencia"
                                             fullWidth={true}
-                                            style={{width: 395}}
+                                            style={{ width: 395 }}
                                             value={idTipoLicencia}
                                             onChange={event => setIdTipoLicencia(event.target.value)}>
                                             <MenuItem value={1}>A1</MenuItem>
@@ -271,6 +322,74 @@ export default function SignUp() {
                                             <MenuItem value={5}>A5</MenuItem>
                                         </Select>
                                     </FormControl>
+
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            style={{paddingTop: 15}}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            label="Número de licencia"
+                                            id="numeroLicencia"
+                                            value={formik.values.numeroLicencia}
+                                            onChange={formik.handleChange}
+                                            error={formik.touched.numeroLicencia && formik.errors.numeroLicencia}
+                                            helperText={formik.touched.numeroLicencia && formik.errors.numeroLicencia}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} >
+                                        <Typography
+                                            style={{ paddingTop: 20 }}
+                                        >Foto carnet (Frontal)</Typography>
+                                        <input
+                                            accept="image/*"
+                                            className={classes.input}
+                                            id="contained-button-file"
+                                            multiple
+                                            type="file"
+                                            onChange={(event) => handleUploadImageClick(event, "carnet_frontal")}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} spacing={2}>
+                                        <Typography
+                                            style={{ paddingTop: 20 }}
+                                        >Foto carnet (Trasero)</Typography>
+                                        <input
+                                            accept="image/*"
+                                            className={classes.input}
+                                            id="contained-button-file"
+                                            multiple
+                                            type="file"
+                                            onChange={(event) => handleUploadImageClick(event, "carnet_trasero")}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} spacing={2}>
+                                        <Typography
+                                            style={{ paddingTop: 20 }}
+                                        >Foto licencia conducir (Frontal)</Typography>
+                                        <input
+                                            accept="image/*"
+                                            className={classes.input}
+                                            id="contained-button-file"
+                                            multiple
+                                            type="file"
+                                            onChange={(event) => handleUploadImageClick(event, "licencia_frontal")}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} spacing={2}>
+                                        <Typography
+                                            style={{ paddingTop: 20 }}
+                                        >Foto licencia conducir (Trasero)</Typography>
+                                        <input
+                                            accept="image/*"
+                                            className={classes.input}
+                                            id="contained-button-file"
+                                            multiple
+                                            type="file"
+                                            onChange={(event) => handleUploadImageClick(event, "licencia_trasero")}
+                                        />
+                                    </Grid>
                                 </Grid>
                             }
                         </Grid>
@@ -278,7 +397,7 @@ export default function SignUp() {
                         <Button
                             fullWidth
                             variant="contained"
-                            style={{marginTop: 15, marginBottom: 15}}
+                            style={{ marginTop: 15, marginBottom: 15 }}
                             disabled={formik.isSubmitting || messageType === "success"}
                             type={"submit"}
                         >

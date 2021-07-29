@@ -3,6 +3,9 @@ import React from "react";
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import TablePayments from '../components/table-payments/table-payments';
 import Button from "../../../components/generic/Button";
+import { ExportCSV } from "../../../utils/ExportCSV";
+
+
 
 
 const PaymentHistoryPage = () => {

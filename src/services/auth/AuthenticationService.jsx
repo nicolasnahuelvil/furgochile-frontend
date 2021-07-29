@@ -5,7 +5,7 @@ import {authHeader, handleResponse} from '../../helpers';
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
 const config = {
-    apiUrl: 'https://furgochile-backend.herokuapp.com'
+    apiUrl: 'http://localhost:8080'
 }
 
 export const authenticationService = {
@@ -62,7 +62,8 @@ function resetPassword2(username, resetCode, password) {
         .then(handleResponse);
 }
 
-function register(nombres, apellidos, rut, dv, edad, telefono, idSexo, idComuna, email, password, idRol, idTipoLicencia) {
+function register(nombres, apellidos, rut, dv, edad, telefono, idSexo, idComuna, email, password, idRol, idTipoLicencia
+    ,selectFileCarnetFrontal, selectFileCarnetTrasero, selectFileLicenciaFrontal, selectFileLicenciaTrasero, numero_licencia, selectFilePerfil) {
     const requestOptions = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -75,7 +76,15 @@ function register(nombres, apellidos, rut, dv, edad, telefono, idSexo, idComuna,
                 edad,
                 telefono,
                 idSexo,
-                idComuna
+                idComuna,
+                img_perfil: selectFilePerfil
+            },
+            "informacionConductor": {
+                img_carnet_frontal: selectFileCarnetFrontal,
+                img_carnet_trasero: selectFileCarnetTrasero,
+                img_licencia_frontal: selectFileLicenciaFrontal,
+                img_licencia_trasero: selectFileLicenciaTrasero,
+                numero_licencia
             },
             email,
             password,

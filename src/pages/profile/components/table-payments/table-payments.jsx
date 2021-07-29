@@ -15,7 +15,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import {TableHead} from "@material-ui/core";
-import EmailIcon from '@material-ui/icons/Email';
+import { ExportCSV } from '../../../../utils/ExportCSV';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -102,6 +102,8 @@ const rows = [
     createData('Andrea Carolina Muñoz Alister', 'Temuco', 'Junio', '200000'),
 ];
 
+    
+
 const useStyles2 = makeStyles({
     table: {
         minWidth: 500,
@@ -112,9 +114,7 @@ const TablePayments = () => {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -123,6 +123,8 @@ const TablePayments = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const fileName = 'Comprobante_Pago';
 
     return (
         <TableContainer component={Paper}>
@@ -158,10 +160,8 @@ const TablePayments = () => {
                             <TableCell>
                                 {row.status}
                             </TableCell>
-                            <TableCell style={{width: 30}} align="center">
-                                <IconButton>
-                                    <EmailIcon fontSize="small"/>
-                                </IconButton>
+                            <TableCell style={{width: 30}} align="center"> 
+                            <ExportCSV csvData={rows} fileName={fileName}/>
                             </TableCell>
                         </TableRow>
                     ))}

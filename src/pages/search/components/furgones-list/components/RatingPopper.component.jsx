@@ -16,7 +16,8 @@ const RatingPopper = ({score}) => {
         >
             <Grid item xs={4} style={{paddingTop: '25%'}}>
                 <Typography variant={'h3'} style={{fontWeight: 'bold'}}>
-                    {(Math.round(puntuacion * 10) / 10).toFixed(1)}
+                    {(Math.round(puntuacion * 10) / 10).toFixed(1
+                        )}
                 </Typography>
             </Grid>
             <Grid item xs={8}>

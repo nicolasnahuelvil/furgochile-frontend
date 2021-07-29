@@ -11,6 +11,9 @@ import ComunaSelect from "../../../components/region-comuna-selects/comuna-selec
 import { furgonesService } from "../../../services/furgones/FurgonesService";
 import Alert from "@material-ui/lab/Alert";
 import { lightGreen } from "@material-ui/core/colors";
+import countryData from "../../../data/country";
+
+const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -26,15 +29,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddFurgonPage = () => {
+const EditFurgonPage = (props) => {
+    const queryParams = queryString.parse(props.location.search);
+
     const classes = useStyles();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [acompanante, setAcompanante] = useState(undefined);
-    const [anho, setAnho] = useState(undefined);
+    const [acompanante, setAcompanante] = useState("");
+    const [anho, setAnho] = useState("");
     const [idMarca, setIdMarca] = useState(undefined);
     const [idModelo, setIdModelo] = useState(undefined);
-    const [capacidad, setCapacidad] = useState(undefined);
-    const [patente, setPatente] = useState(undefined);
+    const [capacidad, setCapacidad] = useState("");
+    const [patente, setPatente] = useState("");
     const [regionSelected, setRegionSelected] = useState(undefined);
     const [comunaSelected, setComunaSelected] = useState(undefined);
     const [idEstado, setIdEstado] = useState(undefined);
@@ -45,13 +50,37 @@ const AddFurgonPage = () => {
         setIsModalOpen(!isModalOpen);
     }
     const [marcas, setMarcas] = useState([]);
+    const [furgonData, setFurgonData] = useState({});
+
+
+    const handleSetFurgonData = (f) => {
+        setAcompanante(f.acompanante)
+        setAnho(f.furgon.anho)
+        setCapacidad(f.furgon.capacidad)
+        setPatente(f.furgon.patente)
+        setIdEstado(f.furgon.idEstado)
+        setIdMarca(f.furgon.idMarca)
+        setIdModelo(f.furgon.idModelo)
+
+        const preRegion = countryData.find(r => r.number === f.location.regionId)
+        setRegionSelected(preRegion)
+
+        const preComuna = preRegion.communes.find(c => c.id === f.location.comunaId)
+        setComunaSelected(preComuna)
+    }
+
 
     useEffect(() => {
-
         marcasService.getAll()
             .then(response => {
                 console.log(response)
                 setMarcas(response)
+            })
+
+        furgonesService.getById(queryParams.idFurgon)
+            .then(response => {
+                setFurgonData(response)
+                handleSetFurgonData(response)
             })
 
     }, [])
@@ -72,8 +101,8 @@ const AddFurgonPage = () => {
     }
 
     const handleAdd = () => {
-        console.log(JSON.stringify({acompanante, anho, idMarca, idModelo, capacidad, patente, idRegion: regionSelected.id, idComuna: comunaSelected.id, idEstado, selectFile}))
-        furgonesService.add(acompanante, anho, idMarca, idModelo, capacidad, patente, regionSelected.id, comunaSelected.id, idEstado, selectFile)
+        console.log(JSON.stringify({idFurgon: queryParams.idFurgon, acompanante, anho, idMarca, idModelo, capacidad, patente, idRegion: regionSelected.id, idComuna: comunaSelected.id, idEstado, selectFile}))
+        furgonesService.edit(queryParams.idFurgon, acompanante, anho, idMarca, idModelo, capacidad, patente, regionSelected.id, comunaSelected.id, idEstado, selectFile)
             .then(response => {
                 console.log(response)
                 setMsgType("success")
@@ -107,10 +136,9 @@ const AddFurgonPage = () => {
         <>
             <Grid container>
                 <Grid item xs={12} style={{ padding: 25 }}>
-                    <Typography variant='h4' align='center'>Agregar nuevo furgon</Typography>
+                    <Typography variant='h4' align='center'>Editar furgon</Typography>
                     <Typography align='center' style={{ paddingTop: 10 }}>
-                        Verificar es nuestro apartado para registrarte como dueño de un furgon y hacer promoción del
-                        mismo.
+                       En este apartado puedes realizar cambios en la información de tu furgon.
                     </Typography>
                 </Grid>
 
@@ -140,6 +168,7 @@ const AddFurgonPage = () => {
                                     <FormControl variant="outlined">
                                         <InputLabel>Marca</InputLabel>
                                         <Select
+                                            key={idMarca}
                                             label="Marca"
                                             id="idMarca"
                                             fullWidth
@@ -157,6 +186,7 @@ const AddFurgonPage = () => {
                                     <FormControl variant="outlined">
                                         <InputLabel>Modelo</InputLabel>
                                         <Select
+                                            key={idModelo}
                                             label="Modelo"
                                             id="idModelo"
                                             fullWidth
@@ -196,6 +226,7 @@ const AddFurgonPage = () => {
                                 <FormControl variant="outlined">
                                     <InputLabel>Estado</InputLabel>
                                     <Select
+                                        key={idEstado}
                                         label="Estado"
                                         id="idEstado"
                                         fullWidth
@@ -215,7 +246,7 @@ const AddFurgonPage = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Button onClick={handleAdd} disabled={msgType === "success"}>
-                                        Agregar
+                                        Editar
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -238,12 +269,6 @@ const AddFurgonPage = () => {
                         onChange={handleUploadImageClick}
                     />
                 </Grid>
-
-                <Grid item xs={12}>
-                    <Typography style={{ fontSize: 13, paddingTop: 20 }}>
-                        Este formulario es para registrar furgones
-                    </Typography>
-                </Grid>
             </Grid>
             <Modal
                 aria-labelledby="spring-modal-title"
@@ -259,7 +284,7 @@ const AddFurgonPage = () => {
             >
                 <Fade in={isModalOpen}>
                     <div className={classes.paper}>
-                        <h2 id="modal-title">Agregaste un nuevo furgon!</h2>
+                        <h2 id="modal-title">Editaste el furgon!</h2>
                         <p id="modal-description">Dentro de los siguientes dias se confirmara o rechazara tu
                             verificación vía correo électronico, si es confirmada tu cuenta cambiara a dueño de furgon y
                             podras agregar tus vehiculos.</p>
@@ -270,4 +295,4 @@ const AddFurgonPage = () => {
     )
 }
 
-export default AddFurgonPage;
+export default EditFurgonPage;

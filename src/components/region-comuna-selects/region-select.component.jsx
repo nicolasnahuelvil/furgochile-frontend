@@ -9,6 +9,7 @@ const RegionSelect = ({regionSelected, setRegionSelected, ...rest}) => {
 
     return (
         <Autocomplete
+            key={regionSelected}
             id="regionSelect"
             options={countryData}
             value={regionSelected}

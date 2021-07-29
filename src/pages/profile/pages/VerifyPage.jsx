@@ -1,5 +1,5 @@
-import {Fade, Grid, makeStyles, Modal, Typography} from "@material-ui/core";
-import React, {useState} from "react";
+import { Fade, Grid, makeStyles, Modal, Typography } from "@material-ui/core";
+import React, { useState } from "react";
 import TextField from '@material-ui/core/TextField';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from "../../../components/generic/Button";
@@ -22,16 +22,19 @@ const VerifyPage = () => {
     const classes = useStyles();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     }
 
+    
+
     return (
         <>
             <Grid container>
-                <Grid item xs={12} style={{padding: 25}}>
+                <Grid item xs={12} style={{ padding: 25 }}>
                     <Typography variant='h4' align='center'>Verificar</Typography>
-                    <Typography align='center' style={{paddingTop: 10}}>
+                    <Typography align='center' style={{ paddingTop: 10 }}>
                         Verificar es nuestro apartado para registrarte como dueño de un furgon y hacer promoción del
                         mismo.
                     </Typography>
@@ -42,28 +45,29 @@ const VerifyPage = () => {
                         <Grid item xs={5}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="RUT" variant="outlined"/>
-                                    <br/>
+                                    <TextField id="outlined-basic" label="RUT" variant="outlined" />
+                                    <br />
                                     Ejemplo: 77888999-0
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Nombre" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Nombre" variant="outlined" />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Apellido paterno" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Apellido paterno" variant="outlined" />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField id="outlined-basic" label="Apellido materno" variant="outlined"/>
+                                    <TextField id="outlined-basic" label="Apellido materno" variant="outlined" />
                                 </Grid>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={5}>
                             <Grid container>
-                                <Grid item xs={6} style={{paddingBottom: 50}}>
-                                    <TextField id="outlined-basic" label="Numero de licencia" variant="outlined"/>
+                                <Grid item xs={6} style={{ paddingBottom: 10 }}>
+                                    <TextField id="outlined-basic" label="Numero de licencia" variant="outlined" />
                                 </Grid>
                             </Grid>
+
                         </Grid>
 
                         <Grid item xs={2}>
@@ -76,11 +80,13 @@ const VerifyPage = () => {
                             </Grid>
                         </Grid>
 
+
+                        
                     </Grid>
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Typography style={{fontSize: 13, paddingTop: 20}}>
+                    <Typography style={{ fontSize: 13, paddingTop: 20 }}>
                         Este formulario es para Consulta inhabilidades para trabajar con menores de edad ademas de
                         comprobar si se encuentra su licencia vigente A1 o A3.
                     </Typography>

@@ -1,46 +1,31 @@
-import {Grid, Typography} from "@material-ui/core";
+import {Card, CardActions, CardContent, Grid, Typography } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import {servicesService} from "../../../services/services/ServicesService";
+import Button from "../../../components/generic/Button";
+import { servicesService } from "../../../services/services/ServicesService";
 
-const ServicesPage = ({user: currentUser}) => {
+const ServicesPage = ({ user: currentUser }) => {
 
-    const services = [
-        {
-            ubicacion: 'Temuco, Araucania',
-            nombre: 'Andrea Carolina Muñoz Alister',
-            precio: '200.000',
-            horario: 'Mañana'
-        },
-        {
-            ubicacion: 'Temuco, Araucania',
-            nombre: 'Andrea Carolina Muñoz Alister',
-            precio: '200.000',
-            horario: 'Mañana'
-        },
-        {
-            ubicacion: 'Temuco, Araucania',
-            nombre: 'Andrea Carolina Muñoz Alister',
-            precio: '200.000',
-            horario: 'Mañana'
-        },
-        {
-            ubicacion: 'Temuco, Araucania',
-            nombre: 'Andrea Carolina Muñoz Alister',
-            precio: '200.000',
-            horario: 'Mañana'
-        }
-    ]
+    
 
-    const renderService = ({comuna, nombre, precio, horario}) => (
-        <Grid item xs={12}>
-            <Typography>
-                <b>{comuna}</b><br/>
-                <b>Nombre:</b> {nombre} <br/>
-                <b>Precio:</b> ${precio} <br/>
-                <b>Horario:</b> {horario}<br/>
-            </Typography>
+    const renderService = ({ comuna, nombre, precio, horario }) => (
+        <Grid item xs={4}>
+            <Card variant="outlined">
+                <CardContent>
+                    <Typography variant="h5" component="h2">
+                        <b>{comuna}</b><br />
+                    </Typography>
+                    <Typography style={{paddingTop: 20}} >
+                        <b>Nombre:</b> {nombre} <br />
+                        <b>Precio:</b> ${precio} <br />
+                        <b>Horario:</b> {horario}<br />
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button>Pagar</Button>
+                </CardActions>
+            </Card>
         </Grid>
     )
 
@@ -59,7 +44,7 @@ const ServicesPage = ({user: currentUser}) => {
     return (
         <Grid container>
 
-            <Grid item xs={12} style={{padding: 25, marginBottom: 30}}>
+            <Grid item xs={12} style={{ padding: 25, marginBottom: 30 }}>
                 <Typography variant='h4' align='center'>
                     Servicios contratados
                 </Typography>

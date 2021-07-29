@@ -26,7 +26,7 @@ const ServicesTable = ({idFurgon, servicios}) => {
                             <TableCell align="center">{servicio.capacidad}</TableCell>
                             <TableCell>{servicio.tipoServicio}</TableCell>
                             <TableCell>{servicio.horario}</TableCell>
-                            <TableCell align="center">{servicio.disponible}</TableCell>
+                            <TableCell align="center">{servicio.capacidad}</TableCell>
                             <TableCell align="right" style={{
                                 color: '#8DD065',
                                 fontWeight: 'bold'
